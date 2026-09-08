@@ -1,0 +1,240 @@
+#VRML_SIM R2025a utf8
+# A small differential-drive vehicle with a forward-facing RGB camera, used to detect
+# and follow a ping-pong ball.
+#
+# Frame (ENU, as declared by the worlds that instantiate this PROTO):
+#   +X forward   +Y left   +Z up
+#
+# Geometry is chosen to match config.py. Changing a dimension here without changing
+# config.py silently breaks the distance estimate and the drive mixer:
+#   wheel radius     0.040 m   -> config.WHEEL_RADIUS_M
+#   wheel separation 0.160 m   -> config.WHEEL_SEPARATION_M
+#   motor maxVelocity 10 rad/s -> config.MAX_WHEEL_VELOCITY_RAD_S
+#
+# A Webots Cylinder's axis runs along its local Z, NOT Y. Measured, not assumed: a bare
+# cylinder (r=0.04, h=0.02) dropped onto a plane settles at z=0.010, lying flat like a
+# coin, while a control sphere settles at exactly its radius. Each wheel is therefore
+# wrapped in a Pose rotated 90 deg about X so the cylinder axis lines up with the hinge
+# axis (+Y). Without that the wheels are horizontal discs: the chassis grounds out, the
+# robot sinks ~0.03 m and turning runs at roughly half the commanded rate.
+#
+# Layout: two driven wheels forward of the centre of mass, one caster sphere at the rear.
+# The caster is part of this Robot's own boundingObject rather than a child Solid. A child
+# Solid with no Physics node does not collide, which left the rear unsupported and pitched
+# the robot 12.4 deg nose-up - fatal for a forward-facing camera. The whole body therefore
+# carries contactMaterial "caster" so the world can give it near-zero friction; the wheels
+# are separate Solids and keep the default material, so they still grip.
+
+PROTO PingPongFollowerRobot [
+  field SFVec3f    translation       0 0 0
+  field SFRotation rotation          0 0 1 0
+  field SFString   name              "ping_pong_follower"
+  field SFString   controller        "ball_follower"
+  field MFString   controllerArgs    []
+  field SFBool     supervisor        FALSE
+  field SFInt32    cameraWidth       640
+  field SFInt32    cameraHeight      480
+  field SFFloat    cameraFieldOfView 1.0
+  field SFColor    bodyColor         0.15 0.35 0.75
+]
+{
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    name IS name
+    controller IS controller
+    controllerArgs IS controllerArgs
+    supervisor IS supervisor
+    contactMaterial "caster"
+    children [
+      # ---------------- chassis (visual) ----------------
+      Pose {
+        translation 0 0 0.055
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor IS bodyColor
+              roughness 0.6
+              metalness 0
+            }
+            geometry Box {
+              size 0.20 0.12 0.05
+            }
+          }
+        ]
+      }
+
+      # ---------------- rear caster (visual) ----------------
+      Pose {
+        translation -0.080 0 0.030
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.2 0.2 0.2
+              roughness 1
+              metalness 0
+            }
+            geometry Sphere {
+              radius 0.030
+              subdivision 2
+            }
+          }
+        ]
+      }
+
+      # ---------------- left wheel ----------------
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 1 0
+          anchor 0.040 0.080 0.040
+        }
+        device [
+          RotationalMotor {
+            name "left wheel motor"
+            maxVelocity 10
+          }
+          PositionSensor {
+            name "left wheel sensor"
+          }
+        ]
+        endPoint Solid {
+          translation 0.040 0.080 0.040
+          children [
+            Pose {
+              rotation 1 0 0 1.5708
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.1 0.1 0.1
+                    roughness 1
+                    metalness 0
+                  }
+                  geometry Cylinder {
+                    radius 0.040
+                    height 0.020
+                  }
+                }
+              ]
+            }
+          ]
+          name "left wheel"
+          boundingObject Pose {
+            rotation 1 0 0 1.5708
+            children [
+              Cylinder {
+                radius 0.040
+                height 0.020
+              }
+            ]
+          }
+          physics Physics {
+            density -1
+            mass 0.05
+          }
+        }
+      }
+
+      # ---------------- right wheel ----------------
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 1 0
+          anchor 0.040 -0.080 0.040
+        }
+        device [
+          RotationalMotor {
+            name "right wheel motor"
+            maxVelocity 10
+          }
+          PositionSensor {
+            name "right wheel sensor"
+          }
+        ]
+        endPoint Solid {
+          translation 0.040 -0.080 0.040
+          children [
+            Pose {
+              rotation 1 0 0 1.5708
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.1 0.1 0.1
+                    roughness 1
+                    metalness 0
+                  }
+                  geometry Cylinder {
+                    radius 0.040
+                    height 0.020
+                  }
+                }
+              ]
+            }
+          ]
+          name "right wheel"
+          boundingObject Pose {
+            rotation 1 0 0 1.5708
+            children [
+              Cylinder {
+                radius 0.040
+                height 0.020
+              }
+            ]
+          }
+          physics Physics {
+            density -1
+            mass 0.05
+          }
+        }
+      }
+
+      # ---------------- front camera ----------------
+      # Webots cameras view along their local +X, so an unrotated camera on the front face
+      # looks straight ahead. Confirmed against projects/samples/devices/worlds/camera.wbt.
+      Camera {
+        translation 0.100 0 0.085
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.05 0.05 0.05
+              roughness 1
+              metalness 0
+            }
+            geometry Box {
+              size 0.012 0.030 0.020
+            }
+          }
+        ]
+        name "camera"
+        fieldOfView IS cameraFieldOfView
+        width IS cameraWidth
+        height IS cameraHeight
+        near 0.02
+      }
+    ]
+
+    boundingObject Group {
+      children [
+        Pose {
+          translation 0 0 0.055
+          children [
+            Box {
+              size 0.20 0.12 0.05
+            }
+          ]
+        }
+        Pose {
+          translation -0.080 0 0.030
+          children [
+            Sphere {
+              radius 0.030
+            }
+          ]
+        }
+      ]
+    }
+    physics Physics {
+      density -1
+      mass 1.2
+      centerOfMass [ 0 0 0.045 ]
+    }
+  }
+}

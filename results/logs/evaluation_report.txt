@@ -1,0 +1,19 @@
+============================================================
+EVALUATION REPORT
+============================================================
+
+Detection Rate:             100.00 %
+Tracking Success Rate:        0.00 %
+
+Mean Absolute Error (MAE):    0.00 px
+Maximum Error:                0.15 px
+
+Response Time:               0.000 s
+Final Distance Error:       0.0306 m
+
+Recovery Time (avg):       N/A (no ball loss/recovery)
+Number of Recoveries:            0
+
+Average FPS:                 62.53 Hz
+
+============================================================

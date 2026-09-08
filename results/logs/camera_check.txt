@@ -1,0 +1,77 @@
+=== camera device ===
+name              : camera
+resolution        : 640x480
+horizontal FOV    : 1.0000 rad
+sampling period   : 32 ms (controller timestep 32 ms)
+
+=== converted frame ===
+raw buffer        : 1228800 bytes (640x480x4 BGRA)
+array shape       : (480, 640, 3)
+dtype             : uint8
+C-contiguous      : True
+writeable         : True
+channel means BGR : B=195.8 G=180.1 R=170.0
+
+=== channel-order proof ===
+brightest orange pixel BGR : B=60 G=122 R=235
+same pixel as HSV hue      : 11  (orange is 5-20; RGBA misread gives ~110)
+
+=== throughput over 150 frames ===
+conversion mean   : 0.212 ms/frame
+conversion median : 0.198 ms/frame
+conversion max    : 2.986 ms/frame
+wall clock        : 5.14 s for 150 frames (29.2 frames/s)
+sim time budget   : 32.0 ms/frame at timestep 32 ms
+
+=== detection over the diagnostic window ===
+frames evaluated  : 150
+detection rate    : 100.0 % (150/150)
+center_x  min/mean/max : 319.43 / 319.50 / 319.57
+center_y  min/mean/max : 271.32 / 275.63 / 279.55
+radius    min/mean/max : 9.65 / 10.86 / 12.10
+area      min/mean/max : 267.0 / 345.2 / 430.0
+conf      min/mean/max : 0.881 / 0.911 / 0.933
+detect cost       : 1.084 ms/frame mean
+overlay cost      : 0.771 ms/frame mean
+range valid       : 150/150 frames
+distance  min/mean/max : 0.9679 / 1.0832 / 1.2143 m
+bearing   min/mean/max : -0.007 / -0.000 / +0.007 deg
+vs supervisor truth    : 1.2018 m -> -9.87 %
+
+=== debug view ===
+cv2 window        : open (Robot Camera Debug)
+
+=== memory ===
+working set start : 50.20 MB
+working set mid   : 64.24 MB
+working set end   : 62.91 MB
+growth 1st half   : +14.043 MB over 75 frames
+growth 2nd half   : -1.324 MB over 75 frames
+
+A one-time allocation (opening the highgui window, warming numpy and
+OpenCV) lands entirely in the first half. A real per-frame leak would
+grow both halves about equally, so the second half is the leak test.
+
+=== frame freshness ===
+pixels changed between sampled frames : 4042, 835, 2768, 897, 909, 968, 4812
+
+=== verdict ===
+[PASS] buffer length matches width*height*4
+[PASS] converted shape is (480, 640, 3)
+[PASS] dtype is uint8
+[PASS] array is writeable (overlay-safe)
+[PASS] array is C-contiguous
+[PASS] channel order is BGR, not RGB
+[PASS] frame is not blank
+[PASS] frames update between steps while the view changes
+[PASS] conversion cost under 2 ms/frame
+[PASS] debug window opened when requested
+[PASS] ball detected in every frame at the start pose
+[PASS] detection cost under 5 ms/frame
+[PASS] range valid in every detected frame
+[PASS] start-pose distance within 1.5 pct of supervisor truth
+[PASS] overlay cost under 5 ms/frame
+[PASS] full pipeline fits the 32 ms timestep
+[PASS] no per-frame memory leak (2nd-half growth < 1 MB)
+
+RESULT: ALL PASS

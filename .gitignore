@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Webots project/session files (regenerated on every open)
+*.wbproj
+.*.wbproj
+*.wbt.bak
+
+# OS / editor
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+
+# Scratch
+scratch/
+*.tmp
+
+# results/ is intentionally NOT ignored: logs and plots are submission deliverables.

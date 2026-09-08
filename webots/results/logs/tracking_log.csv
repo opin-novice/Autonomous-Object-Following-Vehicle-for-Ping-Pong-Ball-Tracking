@@ -1,0 +1,1 @@
+timestamp,ball_detected,ball_x,ball_y,ball_radius,estimated_distance,image_error,linear_velocity,angular_velocity,left_motor_velocity,right_motor_velocity,state

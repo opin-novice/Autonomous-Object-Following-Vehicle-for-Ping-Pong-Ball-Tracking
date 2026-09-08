@@ -1,0 +1,2 @@
+PingPongFollowerRobot.proto is created in Phase 1 (PROMPT 2), if the robot is factored
+out of the world file rather than defined inline.

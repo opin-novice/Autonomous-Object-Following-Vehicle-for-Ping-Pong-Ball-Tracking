@@ -1,0 +1,40 @@
+=== device check ===
+camera             : camera  640x480  fov=1.000 rad
+left motor         : left wheel motor  maxVelocity=10.00 rad/s
+right motor        : right wheel motor  maxVelocity=10.00 rad/s
+config wheel radius: 0.0400 m
+config wheel sep   : 0.1600 m
+
+=== resting pose after settle ===
+origin z           : -0.0002 m  (nominal 0.0000)
+pitch              : +0.064 deg (+ = nose up)
+roll               : -0.000 deg
+camera world height: 0.0849 m  (nominal 0.0850)
+
+=== manoeuvre 1: drive forward ===
+both wheels        : 4.00 rad/s for 3.01 s
+start position     : x=0.0000 y=-0.0000 z=-0.0002
+end position       : x=0.4811 y=-0.0000 z=-0.0002
+distance travelled : 0.4811 m
+expected (R*w*t)   : 0.4813 m
+slip / error       : -0.0 %
+forward dx         : +0.4811 m    lateral dy: -0.0000 m
+heading drift      : 0.00 deg
+
+=== manoeuvre 2: rotate in place ===
+wheels             : left -1.50 / right +1.50 rad/s for 3.01 s
+yaw change         : +115.01 deg
+expected           : +129.26 deg
+error              : -11.0 %
+centre drift       : 0.0673 m
+
+=== verdict ===
+[PASS] robot drove forward
+[PASS] travel within 25% of prediction
+[PASS] drove roughly straight (drift < 10 deg)
+[PASS] robot rotated
+[PASS] rotation within 30% of prediction
+[PASS] rotated near in place (drift < 0.10 m)
+[PASS] camera resolution matches config
+
+RESULT: ALL PASS

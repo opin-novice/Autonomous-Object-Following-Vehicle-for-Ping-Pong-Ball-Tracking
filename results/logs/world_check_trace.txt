@@ -1,0 +1,11 @@
+00 controller entered
+01 project modules imported
+02 cv2 / numpy / webots imported
+03 devices ready
+04 nodes resolved
+05 settled
+06 rest check done
+07 physics check done
+08 vision check done
+09 distance sweep done
+10 report written

@@ -1,0 +1,11 @@
+00 controller entered
+01 config imported
+02 ball_follower imported
+03 webots api imported
+04 supervisor constructed
+05 devices set up
+06 self node acquired
+07 settled on floor
+08 drive manoeuvre done
+09 turn manoeuvre done
+10 report written
