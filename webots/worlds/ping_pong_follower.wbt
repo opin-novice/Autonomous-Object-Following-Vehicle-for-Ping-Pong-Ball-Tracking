@@ -1,27 +1,6 @@
 #VRML_SIM R2025a utf8
 
-EXTERNPROTO "../protos/PingPongFollowerRobot.proto"
-
-# Main world: 4 m x 4 m walled arena, one orange ping-pong ball, one follower robot.
-#
-# Repeatable initial configuration. Every pose below is explicit, the timestep is fixed,
-# and nothing is randomised, so a reset reproduces the same run. Do not save the world
-# from the GUI after a simulation has moved anything - that would bake the drifted state
-# into these coordinates.
-#
-# Placement (measured against config.py, verified by the world_check controller):
-#   robot origin       (-1.000, 0, 0)  facing +X
-#   camera             (-0.900, 0, 0.085)
-#   ball centre        ( 0.300, 0, 0.020)
-#   camera-to-ball     1.200 m horizontally
-#
-# At that range a 40 mm ball subtends r = f*D/(2*Z) = 585.8*0.04/2.4 = 9.8 px and sits
-# 3.1 deg (about 32 px) below the optical axis - comfortably inside the 0.78 rad vertical
-# FOV. The 1.0-1.5 m band was chosen deliberately: at the 3 m the specification suggests,
-# the ball is only ~3.9 px in radius and circularity filtering stops being meaningful.
-#
-# Floor and walls are deliberately desaturated grey. Orange segmentation keys on
-# saturation as well as hue, so a neutral background cannot produce false positives.
+EXTERNPROTO "d:/Autonomous Car/webots/protos/PingPongFollowerRobot.proto"
 
 WorldInfo {
   info [
@@ -29,25 +8,26 @@ WorldInfo {
   ]
   title "Ping Pong Follower"
   basicTimeStep 16
-  coordinateSystem "ENU"
   contactProperties [
     ContactProperties {
       material1 "caster"
-      material2 "default"
-      coulombFriction 0.05
+      coulombFriction [
+        0.05
+      ]
     }
     ContactProperties {
       material1 "ball"
-      material2 "default"
-      coulombFriction 0.7
+      coulombFriction [
+        0.7
+      ]
       rollingFriction 0.03 0 0
       bounce 0.3
     }
   ]
 }
 Viewpoint {
-  orientation -0.28 0.35 0.89 1.75
-  position -2.6 -2.2 2.0
+  orientation -0.16066235414506916 0.04409608803233993 0.9860239058870777 3.352132829742762
+  position 3.548012943470874 0.03864747553648609 1.4117543029545587
 }
 Background {
   skyColor [
@@ -63,10 +43,7 @@ DirectionalLight {
 DirectionalLight {
   ambientIntensity 0.3
   direction -0.5 0.4 -0.8
-  intensity 1.0
 }
-
-# ---------------- floor ----------------
 DEF FLOOR Solid {
   children [
     Shape {
@@ -85,19 +62,17 @@ DEF FLOOR Solid {
     size 4 4
   }
 }
-
-# ---------------- walls ----------------
 DEF WALL_NORTH Solid {
   translation 0 2.025 0.15
   children [
     DEF WALL_LONG Shape {
       appearance PBRAppearance {
-        baseColor 0.52 0.55 0.60
+        baseColor 0.52 0.55 0.6
         roughness 1
         metalness 0
       }
       geometry Box {
-        size 4.1 0.05 0.30
+        size 4.1 0.05 0.3
       }
     }
   ]
@@ -117,12 +92,12 @@ DEF WALL_EAST Solid {
   children [
     DEF WALL_SHORT Shape {
       appearance PBRAppearance {
-        baseColor 0.52 0.55 0.60
+        baseColor 0.52 0.55 0.6
         roughness 1
         metalness 0
       }
       geometry Box {
-        size 0.05 4.0 0.30
+        size 0.05 4 0.3
       }
     }
   ]
@@ -137,12 +112,9 @@ DEF WALL_WEST Solid {
   name "wall west"
   boundingObject USE WALL_SHORT
 }
-
-# ---------------- ping-pong ball ----------------
-# 40 mm diameter, 2.7 g - regulation values. Light enough to be nudged if the robot
-# reaches it, which is realistic and is why the controller stops short.
 DEF BALL Solid {
-  translation 0.300 0 0.020
+  translation 0.4023849999993054 -0.8234540000004411 0.019997881039999995
+  rotation 0.9123925689310738 0.2248316914472863 0.34203875610858486 1.5131199977057448
   children [
     Shape {
       appearance PBRAppearance {
@@ -151,7 +123,7 @@ DEF BALL Solid {
         metalness 0
       }
       geometry Sphere {
-        radius 0.020
+        radius 0.02
         subdivision 3
       }
     }
@@ -159,22 +131,26 @@ DEF BALL Solid {
   name "ping_pong_ball"
   contactMaterial "ball"
   boundingObject Sphere {
-    radius 0.020
+    radius 0.02
   }
   physics Physics {
     density -1
     mass 0.0027
   }
+  linearVelocity 0 0 6.173522416538629e-17
 }
-
-# ---------------- robot ----------------
-# "ball_follower" is the active controller from PROMPT 4 onward. The world_check
-# controller still exists and can be selected temporarily to re-verify the arena.
-# supervisor stays TRUE so the evaluation scripts can move the ball in later phases;
-# ball_follower itself only constructs a plain Robot and never uses supervisor calls.
 DEF ROBOT PingPongFollowerRobot {
-  translation -1.000 0 0
-  rotation 0 0 1 0
-  controller "ball_follower"
+  hidden position_0_0 54.92142694956502
+  hidden position_0_1 46.00728916762773
+  hidden linearVelocity_0 7.92370612677065e-16 -5.693748334780682e-16 -7.105427357601002e-17
+  hidden angularVelocity_0 -3.7780242108643147e-16 -1.0883875054609087e-16 -5.4900579812162084e-15
+  hidden rotation_1 0 1 0 4.6559444921283255
+  hidden linearVelocity_1 5.40678779712042e-16 5.872251579532651e-16 -4.619593394036462e-16
+  hidden angularVelocity_1 1.5102704633155086e-16 7.659100516155562e-15 -4.556404168804002e-16
+  hidden rotation_2 0 -1 0 4.258193289808959
+  hidden linearVelocity_2 -9.817304279374338e-16 -2.3387150547277747e-16 1.0632646222985995e-16
+  hidden angularVelocity_2 -1.2990614655339549e-15 -8.670581335183681e-15 -1.90735954540315e-15
+  translation 0.4374187991785873 -0.29727377688369006 -0.00022444179321929464
+  rotation -0.0005595726644664926 -0.0005236802834976965 -0.9999997063186538 1.637063892814751
   supervisor TRUE
 }
